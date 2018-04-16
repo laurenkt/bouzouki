@@ -6,7 +6,7 @@ import Tone     from 'tone';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-class Synth {
+class PluckedString {
 	left  = new Float32Array(32768);
 	right = new Float32Array(32768); // Delay lines up and down the string
 
@@ -20,41 +20,46 @@ class Synth {
 	bridge_m2 = 0;
 	r = 0;
 
-	constructor(size) {
-		this.size = size;
-		this.scriptProcessorNode = Tone.context.createScriptProcessor(size, 1, 1);
-		this.scriptProcessorNode.onaudioprocess = this.onAudioProcess;
-		this.scriptProcessorNode.connect(Tone.Master);
-	}
-
 	pluck(f0, pluck, pickup, damping) {
 		const fs = 44100;
-		const T = 1/fs // Period
-		const L = this.L = Math.floor(0.5 * fs/f0); // String length in samples
-		let x = pluck; // Pluck position as proportion of string length
+		const L =
+			this.L = Math.floor(0.5 * fs/(f0/2)); // String length in samples
+		
 		this.pickup = Math.floor(L * pickup);
-
 		this.r = -1 * (0.9 + ((1-damping)*0.1)); // Bridge reflection coefficient
 
-		let p = x*(L-1); // Find point on string corresponding to pluck position
+		let p = pluck*(L-1); // Find point on string corresponding to pluck position
 
 		// Generate excitation function (initial displacement)
+		const displacement = new Float32Array(L);
 		const k = Math.floor(p);
-		for (let n = 0; n < Math.round(L/2); n++) {
-			this.excitation[n] = this.excitation[L-n-1] = (n/(L/2))/2;
+		for (let n = 0; n < k; n++) {
+			displacement[n] = (n/k) * 0.5;
 		}
-		this.ex_remaining = L;
+		for (let n = k; n < L; n++) {
+			displacement[n] = (1-((n-k)/(L-k))) * 0.5;
+		}
+
+		this.excite(displacement);
 	}
 
-	@autobind
-	onAudioProcess(e) {
-		let y = e.outputBuffer.getChannelData(0);
-		const k = e.inputBuffer.length;
+	excite(data) {
+		for (let n = 0; n < data.length; n++) {
+			this.excitation[n] = data[n];
+		}
+		this.ex_remaining = data.length;
+	}
+
+	// y is pointer to output
+	writeOut(y, k, scale) {
+		if (!scale)
+			scale = 1.0;
+
 		const L = this.L;
 
 		if (this.ex_remaining > 0) {
 			for (let i = 0; i < this.ex_remaining; i++) {
-				this.left[i] = this.right[i] = this.excitation[i];	
+				this.left[i] = this.right[i] = (this.excitation[i]/2);	
 			}
 			this.ex_remaining = 0;
 		}
@@ -71,8 +76,46 @@ class Synth {
 			this.bridge_m2 = this.bridge_m1;
 			this.bridge_m1 = this.bridge;
 
-			y[n] = this.left[this.pickup] + this.right[this.pickup];
+			y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;
 		}
+	}
+}
+
+class Synth {
+
+	strings = [
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+		new PluckedString(),
+	]
+
+	constructor(size) {
+		this.size = size;
+		this.scriptProcessorNode = Tone.context.createScriptProcessor(size, 1, 1);
+		this.scriptProcessorNode.onaudioprocess = this.onAudioProcess;
+		this.scriptProcessorNode.connect(Tone.Master);
+	}
+
+	pluck(string, f0, pluck, pickup, damping) {
+		this.strings[string].pluck(f0, pluck, pickup, damping);
+	}
+
+	@autobind
+	onAudioProcess(e) {
+		const y = e.outputBuffer.getChannelData(0);
+		const k = e.inputBuffer.length;
+
+		// Clear output buffer before passing to strings (since they sum)
+		for (let n = 0; n < k; n++)
+			y[n] = 0;
+
+		for (let i = 0; i < this.strings.length; i++)
+			this.strings[i].writeOut(y, k, 1/this.strings.length);
 	}
 
 }
@@ -82,9 +125,9 @@ const synth = new Synth(1024);
 class SynthUI extends React.PureComponent {
 	state = {
 		f0: 100,
-		pluck: 0.9,
-		pickup: 0.95,
-		damping: 0.12,
+		pluck: 0.001,
+		pickup: 0.85,
+		damping: 0.15,
 		autoplay: false,
 	}
 
@@ -95,7 +138,21 @@ class SynthUI extends React.PureComponent {
 
 		const {f0, pluck, pickup, damping} = this.state;
 
-		synth.pluck(f0, pluck, pickup, damping);
+
+		const chord = new Tone.Pattern((time, string) => {
+			//	synth.pluck(string, 50 + Math.random() * f0, pluck, pickup, damping);
+		}, [0, 1, 2, 3], 'upDown');
+		//chord.start();
+
+		synth.pluck(0, 98.0, pluck, pickup, damping);
+		Tone.Transport.schedule(() => synth.pluck(1, 123.47, pluck, pickup, damping), '+0.02');
+		Tone.Transport.schedule(() => synth.pluck(2, 146.83, pluck, pickup, damping), '+0.04');
+		Tone.Transport.schedule(() => synth.pluck(3, 196, pluck, pickup, damping), '+0.06');
+		Tone.Transport.schedule(() => synth.pluck(4, 246.94, pluck, pickup, damping), '+0.08');
+		Tone.Transport.schedule(() => synth.pluck(5, 293.66, pluck, pickup, damping), '+0.10');
+		//Tone.Transport.schedule(() => synth.pluck(6, 392, pluck, pickup, damping), '+0.12');
+		//Tone.Transport.schedule(() => synth.pluck(7, 493.88, pluck, pickup, damping), '+0.14');
+		Tone.Transport.start();
 	}
 
 	@autobind
@@ -128,10 +185,16 @@ class SynthUI extends React.PureComponent {
 		const {f0, pluck, pickup, damping, autoplay} = this.state;
 
 		return <div>
-			<Slider value={f0} min={80} max={500} onChange={this.onChange('f0')} />
-			<Slider value={pluck} max={0.5} max={1} step={0.01} onChange={this.onChange('pluck')} />
-			<Slider value={pickup} min={0.5} max={1} step={0.01} onChange={this.onChange('pickup')} />
-			<Slider value={damping} min={0.1} max={0.2} step={0.002} onChange={this.onChange('damping')} />
+			<div className="controls">
+				F0 {f0}
+				<Slider value={f0} min={80} max={500} onChange={this.onChange('f0')} />
+				Pluck Position {pluck}
+				<Slider value={pluck} max={0.5} max={1} step={0.001} onChange={this.onChange('pluck')} />
+				Pickup Position {pickup}
+				<Slider value={pickup} min={0.5} max={1} step={0.01} onChange={this.onChange('pickup')} />
+				Damping {damping}
+				<Slider value={damping} min={0.1} max={0.2} step={0.002} onChange={this.onChange('damping')} />
+			</div>
 			<button onClick={this.onClickPlay}>Play</button>
 			<button onClick={this.onClickAutoplay}>{autoplay && '[Yes] '} Autoplay</button>
 		</div>;
