@@ -1,4 +1,4 @@
-# elections-results
+# Bouzouki
 
 `npm install` to install dependencies
 
