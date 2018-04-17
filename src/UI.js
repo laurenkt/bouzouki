@@ -22,21 +22,15 @@ export default class extends React.PureComponent {
 			e.preventDefault();
 
 		const {f0, pluck, pickup, damping} = this.state;
-		const {synth} = this.props;
 
-		const chord = new Tone.Pattern((time, string) => {
-			//	synth.pluck(string, 50 + Math.random() * f0, pluck, pickup, damping);
-		}, [0, 1, 2, 3], 'upDown');
-		//chord.start();
+		//this.playChord([98, 123.47, 146.83, 196, 246.94, 293.66, 392, 493.88]);
+		this.playChord([196, 98, 293.7, 147.8, 220, 220, 293.6, 293.7]);
+	}
 
-		synth.pluck(0, 98.0, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1);
-		Tone.Transport.schedule(() => synth.pluck(1, 123.47, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.02');
-		Tone.Transport.schedule(() => synth.pluck(2, 146.83, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.04');
-		Tone.Transport.schedule(() => synth.pluck(3, 196, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.06');
-		Tone.Transport.schedule(() => synth.pluck(4, 246.94, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.08');
-		Tone.Transport.schedule(() => synth.pluck(5, 293.66, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.10');
-		Tone.Transport.schedule(() => synth.pluck(6, 392, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.12');
-		Tone.Transport.schedule(() => synth.pluck(7, 493.88, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.14');
+	playChord(notes) {
+		for (let i = 0; i < notes.length; i++) {
+			Tone.Transport.schedule(() => this.props.synth.pluck(i, notes[i], Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), `+${0.02*i}`);
+		}	
 		Tone.Transport.start();
 	}
 
