@@ -24,6 +24,13 @@ You should then discuss any of the enhancements or additional extras you have ad
 Evaluation & Further Steps
 ==========================
 
+Further to the 'systems' approach, it would be useful to evaluate the effectiveness of the convolution approach to generate the instrument body. Would it be more effective to model the body more fully? That way things could be parameterised. In the case of this model, an IR from a Taylor acoustic guitar is being used to model the body. Sticking with the convolution approach, it was intended before to utilise an anechoic chamber to record an IR from within the body of the reference bouzouki that was used when designing the synthesiser. Unfortunately this was not managed to be organised in the constraints of time available when accounting for other projects.
+
+Colophon
+========
+
+This system and report were written in Markdown and designed in Javascript using WebAudio, React, with live-updating word count. Please contact the author if you have interesting WebAudio projects.
+
 
 References
 ==========
