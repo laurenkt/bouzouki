@@ -59,6 +59,7 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin(),
 		new HtmlPlugin({template: 'src/index.html'}),
 		new TidyHtmlPlugin(),
+		new CopyWebpackPlugin([{from: 'src/ir', to: 'ir'}]),
 		new CopyWebpackPlugin([{from: 'src/assets/**/*', to: 'assets/[name].[ext]'}]),
 	],
 	devtool: 'inline-source-map',
