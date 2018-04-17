@@ -4,15 +4,23 @@ export default class {
 	left  = new Float32Array(32768);
 	right = new Float32Array(32768); // Delay lines up and down the string
 
+	bridge = undefined
+	bridge_rd = 0;
+
 	excitation = new Float32Array(32768);
 	ex_remaining = 0;
 
-	pickup = 0;
-	L = 0;
-	bridge = 0;
+	bridge_m0 = 0;
 	bridge_m1 = 0;
 	bridge_m2 = 0;
+
+	pickup = 0;
+	L = 0;
 	r = 0;
+
+	constructor(size) {
+		this.bridge = new Float64Array(size); // Bridge delay line
+	}
 
 	pluck(f0, pluck, pickup, damping) {
 		const fs = Tone.context.sampleRate;
@@ -44,6 +52,30 @@ export default class {
 		this.ex_remaining = data.length;
 	}
 
+	bridge_del(negative_offset) {
+		let idx = this.bridge_rd + negative_offset;
+
+		while (idx < 0)
+			idx += this.bridge.length;
+
+		while (idx >= this.bridge.length)
+			idx -= this.bridge.length;
+
+		return this.bridge[idx];
+			//	(this.bridge_length + this.bridge_rd + negative_offset) % this.bridge_length
+	}
+
+	bridge_mav(n) {
+		let out = 0;
+		let scale = 1/n;
+
+		for (let i = 0; i < n; i++) {
+			out += this.bridge_del(-i) * scale;
+		}
+
+		return out;
+	}
+
 	// y is pointer to output
 	writeOut(y, k, scale) {
 		if (!scale)
@@ -59,19 +91,26 @@ export default class {
 		}
 
 		if (L > 0) {
+			let bridge = 0;
+
 			for (let n = 0; n < k; n++) {
 				for (let i = 0; i < L-1; i++) {
 					this.left[i] = this.left[i+1];
 					this.right[i+1] = this.right[i];
 				}
-				this.right[0] = -this.left[0];
-				this.bridge = this.r*this.right[L-1];
+				this.right[0] = -this.left[0]; // Assume perfect reflection at nut
+				bridge = this.r*this.right[L-1]; // Losses at the bridge
 
-				this.left[L-1] = (this.bridge+this.bridge_m1+this.bridge_m2)/3;
-				this.bridge_m2 = this.bridge_m1;
-				this.bridge_m1 = this.bridge;
+				//const loss = (1+this.r)*this.right[L-1];
+				this.bridge[this.bridge_rd] = bridge;
+
+				// Moving average filter
+				this.left[L-1] = this.bridge_mav(2);
 
 				y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;
+
+				if (++this.bridge_rd >= this.bridge.length)
+					this.bridge_rd = 0;
 			}
 		}
 	}

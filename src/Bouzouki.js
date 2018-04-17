@@ -4,19 +4,19 @@ import autobind from 'autobind-decorator';
 
 export default class {
 
-	strings = [
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-		new PluckedString(),
-	]
-
 	constructor(size) {
 		this.size = size;
+
+		this.strings = [
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+			new PluckedString(size),
+		]
 
 		this.instrumentBody = new Tone.Convolver('ir/taylor314ce.wav').connect(new Tone.Gain(2).toMaster());
 

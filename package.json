@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "rm -rf ./dist; webpack",
-		"start": "webpack-dev-server --open --disable-host-check --host 0.0.0.0",
+		"start": "webpack-dev-server --open",
 		"watch": "npm run build; npm start"
 	},
 	"lint-staged": {
