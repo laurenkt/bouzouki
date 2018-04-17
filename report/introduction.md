@@ -21,6 +21,11 @@ Extras
 
 You should then discuss any of the enhancements or additional extras you have added to expand the range of sounds your model is capable of producing. Finally, present your sound design example presets, discuss their sonic content and demonstrate what your system is capable of. Conclude your article with a complete evaluation of what you have achieved and what might be the next steps for this next-generation synthesizer
 
+Losses
+------
+
+Originally the model used a linear factor to control the amount of losses at the bridge. The model is enhanced to use a non-recursive moving average filter. More than a small handful of coefficients would increase latency but in practice that's not a problem as the tone drops off with only a very small number of coefficients.
+
 Evaluation & Further Steps
 ==========================
 
