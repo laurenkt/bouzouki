@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', _ => {
 			el.innerText.split(/\s+/mi).length).reduce((a, b) => a+b) + ' / 2000 words';
 
 	// References
-	$$('section > h1').forEach(el => {
+	$$('section > *').forEach(el => {
 		if (el.innerText !== 'References')
 			return;
 
@@ -28,8 +28,18 @@ document.addEventListener('DOMContentLoaded', _ => {
 	})
 
 	let toc = [];
-	$$('section > h1, section > h2, section > h3, section > h4, section > h5, section > h6').forEach((el, idx) => {
-		el.id = 'heading_' + idx;
+	$$('section > h2').forEach((el, idx) => {
+		el.id = el.innerText
+			// All lowercase
+			.toLowerCase()
+			// Remove any remaining characters that don"t conform to the URL
+			.replace(/[^a-z0-9 _-]+/g, "")
+			// Compress all separators into the chosen separator
+			.replace(/[_ -]+/g, '-')
+			// Remove any leading or trailing separators
+			.replace(/(^[_ -]+|[_ -]+$)/g, "")
+			.trim();
+ 
 		toc.push({title: el.innerText, id: el.id});
 	})
 
@@ -37,7 +47,7 @@ document.addEventListener('DOMContentLoaded', _ => {
 	render(<TableOfContents toc={toc} />, tocRoot);
 	$('body').insertBefore(tocRoot, $('section'));
 
-	const bouzouki = new Bouzouki(2048);
+	const bouzouki = new Bouzouki(512);
 
 	const uiRoot = document.createElement('div');
 	render(<UI synth={bouzouki} />, uiRoot);

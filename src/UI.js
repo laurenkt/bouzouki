@@ -34,7 +34,7 @@ export default class extends React.PureComponent {
 			Tone.Transport.schedule(() =>
 				this.props.synth.pluck(
 					i,
-					notes[i],
+					notes[i] + Math.random()*notes[i]*0.01,
 					Math.max(0, Math.min(1, pluck+ Math.random()/50)),
 					Math.max(0, Math.min(1, pickup+ Math.random()*0.2)),
 					Math.max(0, Math.min(1, damping+ Math.random()*0.1))
@@ -83,15 +83,20 @@ export default class extends React.PureComponent {
 		return <div className="synthesiser">
 			<div className="controls">
 				F0 {f0}
-				<Slider value={f0} min={80} max={500} onChange={this.onChange('f0')} />
+				<Slider value={f0} min={80} max={500}
+					onChange={this.onChange('f0')} />
 				Pluck Position {pluck}
-				<Slider value={pluck} max={0.5} max={1} step={0.001} onChange={this.onChange('pluck')} />
+				<Slider value={pluck} max={0.5} max={1} step={0.001}
+					onChange={this.onChange('pluck')} />
 				Pickup Position {pickup}
-				<Slider value={pickup} min={0.5} max={1} step={0.01} onChange={this.onChange('pickup')} />
+				<Slider value={pickup} min={0.5} max={1} step={0.01}
+					onChange={this.onChange('pickup')} />
 				Damping {damping}
-				<Slider value={damping} min={0} max={0.2} step={0.002} onChange={this.onChange('damping')} />
+				<Slider value={damping} min={0} max={0.2} step={0.002}
+					onChange={this.onChange('damping')} />
 				Coefficients {coefficients}
-				<Slider value={coefficients} min={1} max={10} step={1} onChange={this.onChange('coefficients')} />
+				<Slider value={coefficients} min={1} max={10} step={1}
+					onChange={this.onChange('coefficients')} />
 			</div>
 			<button onClick={this.onClickPlay}>Play</button>
 			<button onClick={this.onClickAutoplay}>{autoplay && '[Yes] '} Autoplay</button>

@@ -1,13 +1,13 @@
 import Tone from 'tone';
 
 export default class {
-	left  = new Float32Array(32768);
-	right = new Float32Array(32768); // Delay lines up and down the string
+	left  = new Float64Array(32768);
+	right = new Float64Array(32768); // Delay lines up and down the string
 
 	bridge = undefined
 	bridge_rd = 0;
 
-	excitation = new Float32Array(32768);
+	excitation = new Float64Array(32768);
 	ex_remaining = 0;
 
 	sympathetic_bridges = [];

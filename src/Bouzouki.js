@@ -89,7 +89,7 @@ export default class {
 			y[n] = 0;
 
 		for (let i = 0; i < this.strings.length; i++)
-			this.strings[i].writeOut(y, k, 1/this.strings.length);
+			this.strings[i].writeOut(y, k, 1);
 	}
 
 }
