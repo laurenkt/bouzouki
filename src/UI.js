@@ -68,7 +68,7 @@ export default class extends React.PureComponent {
 	render() {
 		const {f0, pluck, pickup, damping, autoplay} = this.state;
 
-		return <div>
+		return <div className="synthesiser">
 			<div className="controls">
 				F0 {f0}
 				<Slider value={f0} min={80} max={500} onChange={this.onChange('f0')} />
