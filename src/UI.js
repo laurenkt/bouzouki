@@ -13,6 +13,7 @@ export default class extends React.PureComponent {
 		pickup: 0.85,
 		damping: 0.15,
 		autoplay: false,
+		coefficients: 2,
 	}
 
 	@autobind
@@ -62,11 +63,15 @@ export default class extends React.PureComponent {
 	onChange(key) {
 		return value => {
 			this.setState({[key]: value});
+
+			if (key == 'coefficients') {
+				this.props.synth.strings.forEach(string => string.coefficients = value);
+			}
 		}
 	}
 
 	render() {
-		const {f0, pluck, pickup, damping, autoplay} = this.state;
+		const {f0, pluck, pickup, damping, autoplay, coefficients} = this.state;
 
 		return <div className="synthesiser">
 			<div className="controls">
@@ -78,6 +83,8 @@ export default class extends React.PureComponent {
 				<Slider value={pickup} min={0.5} max={1} step={0.01} onChange={this.onChange('pickup')} />
 				Damping {damping}
 				<Slider value={damping} min={0.1} max={0.2} step={0.002} onChange={this.onChange('damping')} />
+				Coefficients {coefficients}
+				<Slider value={coefficients} min={1} max={10} step={1} onChange={this.onChange('coefficients')} />
 			</div>
 			<button onClick={this.onClickPlay}>Play</button>
 			<button onClick={this.onClickAutoplay}>{autoplay && '[Yes] '} Autoplay</button>

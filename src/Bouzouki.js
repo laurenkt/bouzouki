@@ -18,6 +18,56 @@ export default class {
 			new PluckedString(size),
 		]
 
+		this.strings[0].sympathetic_bridges = [
+			this.strings[1].bridge,
+			this.strings[2].bridge,
+		]
+
+		this.strings[1].sympathetic_bridges = [
+			this.strings[0].bridge,
+			this.strings[2].bridge,
+			this.strings[3].bridge,
+		]
+
+		this.strings[2].sympathetic_bridges = [
+			this.strings[0].bridge,
+			this.strings[1].bridge,
+			this.strings[3].bridge,
+			this.strings[4].bridge,
+		]
+
+		this.strings[3].sympathetic_bridges = [
+			this.strings[1].bridge,
+			this.strings[2].bridge,
+			this.strings[4].bridge,
+			this.strings[5].bridge,
+		]
+
+		this.strings[4].sympathetic_bridges = [
+			this.strings[2].bridge,
+			this.strings[3].bridge,
+			this.strings[5].bridge,
+			this.strings[6].bridge,
+		]
+
+		this.strings[5].sympathetic_bridges = [
+			this.strings[3].bridge,
+			this.strings[4].bridge,
+			this.strings[6].bridge,
+			this.strings[7].bridge,
+		]
+
+		this.strings[6].sympathetic_bridges = [
+			this.strings[4].bridge,
+			this.strings[5].bridge,
+			this.strings[7].bridge,
+		]
+
+		this.strings[7].sympathetic_bridges = [
+			this.strings[5].bridge,
+			this.strings[6].bridge,
+		]
+
 		this.instrumentBody = new Tone.Convolver('ir/taylor314ce.wav').connect(new Tone.Gain(2).toMaster());
 
 		this.scriptProcessorNode = Tone.context.createScriptProcessor(size, 1, 1);

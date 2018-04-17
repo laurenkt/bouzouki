@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', _ => {
 	render(<TableOfContents toc={toc} />, tocRoot);
 	$('body').insertBefore(tocRoot, $('section'));
 
-	const bouzouki = new Bouzouki(1024);
+	const bouzouki = new Bouzouki(2048);
 
 	const uiRoot = document.createElement('div');
 	render(<UI synth={bouzouki} />, uiRoot);

@@ -16,6 +16,8 @@ export default class {
 	bridge_m1 = 0;
 	bridge_m2 = 0;
 
+	coefficients = 2;
+
 	pickup = 0;
 	L = 0;
 	r = 0;
@@ -94,6 +96,7 @@ export default class {
 
 		if (L > 0) {
 			let bridge = 0;
+			let loss = 0;
 
 			for (let n = 0; n < k; n++) {
 				for (let i = 0; i < L-1; i++) {
@@ -103,11 +106,20 @@ export default class {
 				this.right[0] = -this.left[0]; // Assume perfect reflection at nut
 				bridge = this.r*this.right[L-1]; // Losses at the bridge
 
-				//const loss = (1+this.r)*this.right[L-1];
+
 				this.bridge[this.bridge_rd] = bridge;
 
 				// Moving average filter
-				this.left[L-1] = this.bridge_mav(2);
+				loss = this.bridge_mav(this.coefficients);
+
+				this.left[L-1] = loss;
+
+				// Recover any lost signal (total)
+				loss = ((1+this.r)*this.right[L-1]) + (bridge-loss);
+
+				for (let i = 0; i < this.sympathetic_bridges.length; i++) {
+					this.sympathetic_bridges[i][this.bridge_rd] += 0.99*loss;
+				}
 
 				y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;
 
