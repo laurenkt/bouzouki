@@ -21,9 +21,8 @@ class PluckedString {
 	r = 0;
 
 	pluck(f0, pluck, pickup, damping) {
-		const fs = 44100;
-		const L =
-			this.L = Math.floor(0.5 * fs/(f0/2)); // String length in samples
+		const fs = Tone.context.sampleRate;
+		const L  = Math.floor(0.5 * fs/(f0/2)); // String length in samples
 		
 		this.pickup = Math.floor(L * pickup);
 		this.r = -1 * (0.9 + ((1-damping)*0.1)); // Bridge reflection coefficient
@@ -40,6 +39,7 @@ class PluckedString {
 			displacement[n] = (1-((n-k)/(L-k))) * 0.5;
 		}
 
+		this.L = L;
 		this.excite(displacement);
 	}
 
@@ -64,19 +64,21 @@ class PluckedString {
 			this.ex_remaining = 0;
 		}
 
-		for (let n = 0; n < k; n++) {
-			for (let i = 0; i < L-1; i++) {
-				this.left[i] = this.left[i+1];
-				this.right[i+1] = this.right[i];
+		if (L > 0) {
+			for (let n = 0; n < k; n++) {
+				for (let i = 0; i < L-1; i++) {
+					this.left[i] = this.left[i+1];
+					this.right[i+1] = this.right[i];
+				}
+				this.right[0] = -this.left[0];
+				this.bridge = this.r*this.right[L-1];
+
+				this.left[L-1] = (this.bridge+this.bridge_m1+this.bridge_m2)/3;
+				this.bridge_m2 = this.bridge_m1;
+				this.bridge_m1 = this.bridge;
+
+				y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;
 			}
-			this.right[0] = -this.left[0];
-			this.bridge = this.r*this.right[L-1];
-
-			this.left[L-1] = (this.bridge+this.bridge_m1+this.bridge_m2)/3;
-			this.bridge_m2 = this.bridge_m1;
-			this.bridge_m1 = this.bridge;
-
-			y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;
 		}
 	}
 }
@@ -144,14 +146,14 @@ class SynthUI extends React.PureComponent {
 		}, [0, 1, 2, 3], 'upDown');
 		//chord.start();
 
-		synth.pluck(0, 98.0, pluck, pickup, damping);
-		Tone.Transport.schedule(() => synth.pluck(1, 123.47, pluck, pickup, damping), '+0.02');
-		Tone.Transport.schedule(() => synth.pluck(2, 146.83, pluck, pickup, damping), '+0.04');
-		Tone.Transport.schedule(() => synth.pluck(3, 196, pluck, pickup, damping), '+0.06');
-		Tone.Transport.schedule(() => synth.pluck(4, 246.94, pluck, pickup, damping), '+0.08');
-		Tone.Transport.schedule(() => synth.pluck(5, 293.66, pluck, pickup, damping), '+0.10');
-		//Tone.Transport.schedule(() => synth.pluck(6, 392, pluck, pickup, damping), '+0.12');
-		//Tone.Transport.schedule(() => synth.pluck(7, 493.88, pluck, pickup, damping), '+0.14');
+		synth.pluck(0, 98.0, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1);
+		Tone.Transport.schedule(() => synth.pluck(1, 123.47, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.02');
+		Tone.Transport.schedule(() => synth.pluck(2, 146.83, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.04');
+		Tone.Transport.schedule(() => synth.pluck(3, 196, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.06');
+		Tone.Transport.schedule(() => synth.pluck(4, 246.94, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.08');
+		Tone.Transport.schedule(() => synth.pluck(5, 293.66, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.10');
+		Tone.Transport.schedule(() => synth.pluck(6, 392, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.12');
+		Tone.Transport.schedule(() => synth.pluck(7, 493.88, Math.random()/50, 1-Math.random()*0.2, 0.1+Math.random()*0.1), '+0.14');
 		Tone.Transport.start();
 	}
 
