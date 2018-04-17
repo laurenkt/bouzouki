@@ -1,5 +1,9 @@
 @import url("https://use.typekit.net/nut7jfe.css");
 
+$system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+
 body {
 	font: normal 20px / 1.6 'Adobe Caslon Pro';
 	padding: 0;
@@ -9,6 +13,14 @@ body {
 section {
 	padding: 100px;
 	max-width: 600px;
+
+	h1, h2, h3, h4, h5, h6 {
+		font-family: $system;
+	}
+
+	h1 {
+		font-size: 40px;
+	}
 }
 
 footer {
@@ -22,7 +34,7 @@ footer {
 }
 
 .synthesiser {
-	font-family: sans-serif;
+	font-family: $system;
 	max-width: 500px;
 	margin: 100px;
 
