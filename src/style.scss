@@ -11,8 +11,9 @@ body {
 }
 
 section {
-	padding: 100px;
+	padding: 100px 0;
 	max-width: 600px;
+	margin-left: 30%;
 
 	h1, h2, h3, h4, h5, h6 {
 		font-family: $system;
@@ -23,20 +24,33 @@ section {
 	}
 }
 
+.table-of-contents {
+	font-family: $system;
+	position: fixed;
+	top: 100px;
+	left: 100px;
+	right: 30%;
+	width: 20%;
+}
+
 footer {
 	position: fixed;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	height: 80px;
 	background: #eee;
 	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-family: $system;
 }
 
 .synthesiser {
 	font-family: $system;
 	max-width: 500px;
-	margin: 100px;
+	margin: 100px 100px 0 30%;
 
 	button {
 		background: #658d99;

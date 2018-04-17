@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import Tone     from 'tone';
 import Bouzouki from './Bouzouki';
 import UI from './UI';
+import TableOfContents from './TableOfContents';
 
 import './style.scss';
 
@@ -26,12 +27,19 @@ document.addEventListener('DOMContentLoaded', _ => {
 		el.insertAdjacentHTML('afterend', references);
 	})
 
-	let root = document.createElement('div');
+	let toc = [];
+	$$('section > h1, section > h2, section > h3, section > h4, section > h5, section > h6').forEach((el, idx) => {
+		el.id = 'heading_' + idx;
+		toc.push({title: el.innerText, id: el.id});
+	})
+
+	const tocRoot = document.createElement('div');
+	render(<TableOfContents toc={toc} />, tocRoot);
+	$('body').insertBefore(tocRoot, $('section'));
 
 	const bouzouki = new Bouzouki(1024);
-	
-	render(<UI synth={bouzouki} />, root);
-	
-	$('body').insertBefore(root, $('section'));
 
+	const uiRoot = document.createElement('div');
+	render(<UI synth={bouzouki} />, uiRoot);
+	$('body').insertBefore(uiRoot, tocRoot);
 });

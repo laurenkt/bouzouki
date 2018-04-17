@@ -10,6 +10,8 @@ export default class {
 	excitation = new Float32Array(32768);
 	ex_remaining = 0;
 
+	sympathetic_bridges = [];
+
 	bridge_m0 = 0;
 	bridge_m1 = 0;
 	bridge_m2 = 0;
