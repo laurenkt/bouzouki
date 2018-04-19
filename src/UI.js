@@ -8,7 +8,7 @@ import 'rc-slider/assets/index.css';
 
 export default class extends React.PureComponent {
 	state = {
-		f0: 100,
+		f0: 220,
 		pluck: 0.001,
 		pickup: 0.85,
 		damping: 0.018,
@@ -17,6 +17,7 @@ export default class extends React.PureComponent {
 		chord: 0,
 		autoplay: false,
 		variation: true,
+		body: true,
 
 		// Compressor
 		ratio: 12,
@@ -144,6 +145,9 @@ export default class extends React.PureComponent {
 			else
 				this.setState({[key]: value});
 
+			if (key == 'body') {
+				this.props.synth.instrumentBody.wet.value = value.target.checked ? 1 : 0;
+			}
 			if (key == 'coefficients') {
 				this.props.synth.strings.forEach(string => string.coefficients = value);
 			}
@@ -166,7 +170,7 @@ export default class extends React.PureComponent {
 	}
 
 	render() {
-		const {f0, pluck, pickup, damping, autoplay, coefficients, variation} = this.state;
+		const {f0, pluck, pickup, damping, autoplay, coefficients, variation, body} = this.state;
 		const {ratio, threshold, release, attack, knee} = this.state;
 
 		console.log('variation', variation);
@@ -185,6 +189,10 @@ export default class extends React.PureComponent {
 				Coefficients {coefficients}
 				<Slider value={coefficients} min={1} max={10} step={1}
 					onChange={this.onChange('coefficients')} />
+				<label>
+					<input type="checkbox" checked={body} onChange={this.onChange('body')} />
+					 Instrument Body
+				</label>
 				<label>
 					<input type="checkbox" checked={variation} onChange={this.onChange('variation')} />
 					 Random Variation

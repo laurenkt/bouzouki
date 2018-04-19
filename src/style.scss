@@ -86,6 +86,16 @@ footer {
 	font-family: $system;
 }
 
+label {
+	display: flex;
+	align-items: center;
+	font-size: 90%;
+
+	input {
+		margin-right: 10px;
+	}
+}
+
 .synthesiser {
 	font-family: $system;
 	max-width: 500px;
