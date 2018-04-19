@@ -11,10 +11,7 @@ export default class {
 	ex_remaining = 0;
 
 	sympathetic_bridges = [];
-
-	bridge_m0 = 0;
-	bridge_m1 = 0;
-	bridge_m2 = 0;
+	coupling = true;
 
 	coefficients = 2;
 
@@ -117,8 +114,10 @@ export default class {
 				// Recover any lost signal (total)
 				loss = ((1+this.r)*this.right[L-1]) + (bridge-loss);
 
-				for (let i = 0; i < this.sympathetic_bridges.length; i++) {
-					this.sympathetic_bridges[i][this.bridge_rd] += 0.99*loss;
+				if (this.coupling) {
+					for (let i = 0; i < this.sympathetic_bridges.length; i++) {
+						this.sympathetic_bridges[i][this.bridge_rd] += loss;
+					}
 				}
 
 				y[n] += this.left[this.pickup] + this.right[this.pickup] * scale;

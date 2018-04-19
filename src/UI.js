@@ -18,6 +18,7 @@ export default class extends React.PureComponent {
 		autoplay: false,
 		variation: true,
 		body: true,
+		coupling: true,
 
 		// Compressor
 		ratio: 12,
@@ -148,6 +149,9 @@ export default class extends React.PureComponent {
 			if (key == 'body') {
 				this.props.synth.instrumentBody.wet.value = value.target.checked ? 1 : 0;
 			}
+			if (key == 'coupling') {
+				this.props.synth.strings.forEach(string => string.coupling = value.target.checked ? 1 : 0);
+			}
 			if (key == 'coefficients') {
 				this.props.synth.strings.forEach(string => string.coefficients = value);
 			}
@@ -170,7 +174,9 @@ export default class extends React.PureComponent {
 	}
 
 	render() {
-		const {f0, pluck, pickup, damping, autoplay, coefficients, variation, body} = this.state;
+		// Synth
+		const {f0, pluck, pickup, damping, autoplay, coefficients, variation, body, coupling} = this.state;
+		// Compressor
 		const {ratio, threshold, release, attack, knee} = this.state;
 
 		return <div className="synthesiser">
@@ -190,11 +196,15 @@ export default class extends React.PureComponent {
 					onChange={this.onChange('coefficients')} />
 				<label>
 					<input type="checkbox" checked={body} onChange={this.onChange('body')} />
-					 Instrument Body
+					 Instrument body
 				</label>
 				<label>
 					<input type="checkbox" checked={variation} onChange={this.onChange('variation')} />
-					 Random Variation
+					 Random variation
+				</label>
+				<label>
+					<input type="checkbox" checked={coupling} onChange={this.onChange('coupling')} />
+					 Acoustic coupling
 				</label>
 				<div className="extra">
 					F0 {f0}
