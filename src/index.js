@@ -4,6 +4,7 @@ import Tone     from 'tone';
 import Bouzouki from './Bouzouki';
 import UI from './UI';
 import TableOfContents from './TableOfContents';
+import uniq from 'lodash/uniq';
 
 import './style.scss';
 
@@ -21,10 +22,25 @@ document.addEventListener('DOMContentLoaded', _ => {
 		if (el.innerText !== 'References')
 			return;
 
-		const references = Array.prototype.map.call($$('a[title]'), (el, idx) =>
-			`<p>${idx + 1} ${el.getAttribute('title')}</p>`).join();
+		const references = uniq(Array.prototype.map.call($$('a[title]'), el =>
+			({title: el.getAttribute('title'), url: el.getAttribute('href')})));
 
-		el.insertAdjacentHTML('afterend', references);
+		$$('a[title]').forEach(el => {
+			if (el.innerText === 'cite') {
+				const refIdx = references.findIndex(ref => ref.title == el.getAttribute('title'));
+
+				if (refIdx != -1) {
+					el.innerText = `[${refIdx+1}]`;
+					el.setAttribute('href', `#ref_${refIdx+1}`);
+				}
+			}		
+		})
+
+		console.log(references);
+		const bibliography = references.map((ref, idx) =>
+			`<p><strong>[${idx+1}]</strong> <a id="ref_${idx+1}" href="${ref.href}">${ref.title}</a></p>`).join();
+
+		el.insertAdjacentHTML('afterend', bibliography);
 	})
 
 	let toc = [];
