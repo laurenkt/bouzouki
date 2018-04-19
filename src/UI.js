@@ -16,6 +16,7 @@ export default class extends React.PureComponent {
 
 		chord: 0,
 		autoplay: false,
+		variation: true,
 
 		// Compressor
 		ratio: 12,
@@ -33,6 +34,21 @@ export default class extends React.PureComponent {
 
 	@autobind
 	onClickPlay(e) {
+		if (e)
+			e.preventDefault();
+
+		const {f0, pluck, pickup, damping} = this.state;
+
+		this.props.synth.strings[0].pluck(
+			f0,
+			Math.max(0, Math.min(1, pluck+ this.vary(0.02))),
+			Math.max(0.5, Math.min(0.99, pickup+ this.vary(0.02))),
+			Math.max(0, Math.min(0.2, damping+ this.vary(0.01)))
+		);
+	}
+
+	@autobind
+	onClickChord(e) {
 		if (e)
 			e.preventDefault();
 
@@ -69,15 +85,26 @@ export default class extends React.PureComponent {
 			Tone.Transport.schedule(() =>
 				this.props.synth.pluck(
 					i,
-					notes[i] + Math.random()*notes[i]*0.01,
-					Math.max(0, Math.min(1, pluck+ Math.random()/50)),
-					Math.max(0, Math.min(1, pickup+ Math.random()*0.2)),
-					Math.max(0, Math.min(1, damping+ Math.random()*0.1))
+					notes[i] + this.vary(notes[i]*0.01),
+					Math.max(0, Math.min(1, pluck+ this.vary(0.02))),
+					Math.max(0.5, Math.min(0.99, pickup+ this.vary(0.02))),
+					Math.max(0, Math.min(0.2, damping+ this.vary(0.01)))
 				),
 				`+${direction ? 0.03*i : 0.03*(notes.length - i - 1)}`
 			);
 		}	
 		Tone.Transport.start();
+	}
+
+	vary(factor) {
+		const {variation} = this.state;
+
+		if (variation) {
+			return Math.random()*factor;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	@autobind
@@ -94,7 +121,7 @@ export default class extends React.PureComponent {
 		if (!this.state.autoplay)
 			return;
 
-		this.onClickPlay();
+		this.onClickChord();
 		setTimeout(this.autoplay, 1000);
 	}
 
@@ -112,7 +139,10 @@ export default class extends React.PureComponent {
 	@memoize
 	onChange(key) {
 		return value => {
-			this.setState({[key]: value});
+			if (value.target)
+				this.setState({[key]: value.target.checked});
+			else
+				this.setState({[key]: value});
 
 			if (key == 'coefficients') {
 				this.props.synth.strings.forEach(string => string.coefficients = value);
@@ -136,19 +166,18 @@ export default class extends React.PureComponent {
 	}
 
 	render() {
-		const {f0, pluck, pickup, damping, autoplay, coefficients} = this.state;
+		const {f0, pluck, pickup, damping, autoplay, coefficients, variation} = this.state;
 		const {ratio, threshold, release, attack, knee} = this.state;
+
+		console.log('variation', variation);
 
 		return <div className="synthesiser">
 			<div className="controls">
-				F0 {f0}
-				<Slider value={f0} min={80} max={500}
-					onChange={this.onChange('f0')} />
 				Pluck Position {pluck}
 				<Slider value={pluck} max={0.5} max={1} step={0.001}
 					onChange={this.onChange('pluck')} />
 				Pickup Position {pickup}
-				<Slider value={pickup} min={0.5} max={1} step={0.01}
+				<Slider value={pickup} min={0.5} max={0.99} step={0.01}
 					onChange={this.onChange('pickup')} />
 				Damping {damping}
 				<Slider value={damping} min={0} max={0.2} step={0.002}
@@ -156,6 +185,20 @@ export default class extends React.PureComponent {
 				Coefficients {coefficients}
 				<Slider value={coefficients} min={1} max={10} step={1}
 					onChange={this.onChange('coefficients')} />
+				<label>
+					<input type="checkbox" checked={variation} onChange={this.onChange('variation')} />
+					 Random Variation
+				</label>
+				<div className="extra">
+					F0 {f0}
+					<Slider value={f0} min={80} max={500}
+						onChange={this.onChange('f0')} />
+					<button onClick={this.onClickPlay}>String</button>
+				</div>
+				<div className="extra">
+					<button onClick={this.onClickChord}>Chord</button>
+					<button onClick={this.onClickAutoplay}>Autoplay {autoplay ? 'enabled' : 'disabled'}</button>
+				</div>
 				<div className="extra">
 					<h1>Compressor</h1>
 					Ratio {ratio}
@@ -168,10 +211,9 @@ export default class extends React.PureComponent {
 					<Slider value={attack} min={0.01} max={1.0} step={0.01} onChange={this.onChange('attack')} />
 					Knee {knee}
 					<Slider value={knee} min={1} max={60} onChange={this.onChange('knee')} />
+					<span>This is not part of the synthesiser, but does help control how audible the effect is.</span>
 				</div>
 			</div>
-			<button onClick={this.onClickPlay}>Play</button>
-			<button onClick={this.onClickAutoplay}>{autoplay && '[Yes] '} Autoplay</button>
 		</div>;
 	}
 }
