@@ -23,6 +23,7 @@ section {
 	padding: 100px 0;
 	max-width: 600px;
 	margin-left: 30%;
+	counter-reset: figures;
 
 	h1, h2, h3, h4, h5, h6 {
 		font-family: $system;
@@ -30,6 +31,31 @@ section {
 
 	h1 {
 		font-size: 40px;
+	}
+
+	img {
+		max-width: 100%;
+	}
+
+	figure {
+		padding: 10px;
+		margin: 0;
+		counter-increment: figures; 
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		figcaption {
+			margin-top: 10px;
+			font-family: $system;
+			font-size: 14px;
+			text-align: center;
+
+			&::before {
+				content: "Figure " counter(figures) " —";
+				font-weight: bold;
+			}
+		}
 	}
 }
 
