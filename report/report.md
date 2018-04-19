@@ -43,7 +43,7 @@ The shape of the excitation function can be adjusted by adjusting the 'pluck' pa
 
 This is duplicated eight times to create the eight strings of the instrument.
 
-An attempt was made to introduce coupling between the strings to develop the inter-string resonances that are characteristic of the instrument [cite][realistic]. However, it is not obvious what impact this potentially naïve implementation has without proper evaluation.
+An attempt was made to introduce coupling between the strings to develop the inter-string resonances that are characteristic of the instrument [cite][realistic]. However, it is not obvious what impact this potentially naïve implementation has.
 
 The summed output of this system is convolved with an impulse response from an instrument body (in this case a Taylor acoustic guitar as no bouzouki IRs were readily available). This isn't strictly a physical mode, but rather part of a physics-inspired system. It does produce results far more realistically than a simple model would be able to.
 
@@ -60,6 +60,15 @@ The coefficients does seem to have a huge impact on the tone of the resulting so
 
 Tolonen etc. note that modelling tension coupling of the string to the instrument body is important for the naturalness of the synthesised tone [cite][tension]. This approach does not seem too computationally expensive to be performed in real-time, although would require the implementation of a fractional delay line (this does lend itself to the DSP-style implementation used in this synthesiser).
 
+Much attention was given to try and replicate the characteristic resonance that the real instrument has. The speculation was that the proximity of the strings on each course to eachother, and their similar tuning, causes a lot of sympathetic resonance between these strings. This would account for the instrument's characteristic drone. The attempt to introduce this coupling between strings does not seem to produce noticable results, however. Given more time, analysis would be done to see what impact should be expected if any. The literature [cite][realistic] does note that tuning of the string coupling is very important for the effect.
+
+The fact that this model is controlled using F0 instead of string length is not ideal. The transformation between the two is simple, but unfortunately not performed. An additional method could then be provided to 'fret' the string at a certain fret.
+
+The differences in thickness between the strings is not modelled, so the model is effectively not like a real bouzouki, with 8 equal length strings of different guage. Instead it is 8 differently lengthed strings of the same guage. Some kind of modelling of the strings that accounts for their different sizes in more than one dimension, or for the different acoustic impedances of each string, may improve the model significantly.
+
+The default parameters of the model are tuned by ear. A more realistic model may be developed with a different methodology: taking recordings of the bouzouki in an anechoic chamber, each individual string, and their effect together. Using these recordings spectrograms could be created. The synthesiser could then be played with different parameters and recorded, creating spectrograms of those recordings. By comparing these spectrograms and adjusting the parameter models, a more optimal set of tunings could be found. To duplicate the realism of the instrument, it may be useful to have different parameter settings for each string, governed by master parameters to the overall instrument. This could go some way to allieviate the problems of not modelling the individual string thicknesses.
+
+It is clear there is vast scope for improvement with 35 years of published research and development on string synthesis since the original Karplus-Strong paper. The emerging WebAudio ecosystem could benefit greatly from a more sophisticated entry into this category.
 
 Colophon
 --------
