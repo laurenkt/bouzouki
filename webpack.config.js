@@ -38,6 +38,12 @@ module.exports = {
 				},
 			},
 			{
+				test: /\.wav/,
+				use: {
+					loader: 'url-loader'
+				}
+			},
+			{
 				test: /\.scss$/,
 				use: [
 					'style-loader',
@@ -61,6 +67,7 @@ module.exports = {
 		new TidyHtmlPlugin(),
 		new CopyWebpackPlugin([{from: 'src/ir', to: 'ir'}]),
 		new CopyWebpackPlugin([{from: 'src/assets/**/*', to: 'assets/[name].[ext]'}]),
+		new CopyWebpackPlugin([{from: 'report/images', to: 'images'}]),
 	],
 	devtool: 'inline-source-map',
 	devServer: {

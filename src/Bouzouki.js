@@ -2,6 +2,14 @@ import Tone from 'tone';
 import PluckedString from './PluckedString';
 import autobind from 'autobind-decorator';
 
+// Load audio files
+// These must be loaded into the compiler and bundled with the app JS because
+// otherwise web browsers will not permit them to be played locally
+// (cross-origin security restriction)
+// This isn't very efficient though, so on a live web-site they would be 
+// externally loaded
+import bodyIRwav from './ir/taylor314ce.wav';
+
 export default class {
 
 	constructor(size) {
@@ -16,7 +24,7 @@ export default class {
 			new PluckedString(size),
 			new PluckedString(size),
 			new PluckedString(size),
-		]
+		];
 
 		this.strings[0].sympathetic_bridges = [
 			this.strings[1].bridge,
@@ -68,7 +76,9 @@ export default class {
 			this.strings[6].bridge,
 		]
 
-		this.instrumentBody = new Tone.Convolver('ir/taylor314ce.wav').connect(new Tone.Gain(2).toMaster());
+		this.compressor = new Tone.Compressor().toMaster();
+
+		this.instrumentBody = new Tone.Convolver(`${bodyIRwav}`).connect(this.compressor);
 
 		this.scriptProcessorNode = Tone.context.createScriptProcessor(size, 1, 1);
 		this.scriptProcessorNode.onaudioprocess = this.onAudioProcess;
