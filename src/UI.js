@@ -173,9 +173,8 @@ export default class extends React.PureComponent {
 		const {f0, pluck, pickup, damping, autoplay, coefficients, variation, body} = this.state;
 		const {ratio, threshold, release, attack, knee} = this.state;
 
-		console.log('variation', variation);
-
 		return <div className="synthesiser">
+			<p>Use a modern version of Chrome, Safari, or Firefox to use this application. The browser must support WebAudio. Tested on Safari 11.1. To reset to default settings, refresh the page.</p>
 			<div className="controls">
 				Pluck Position {pluck}
 				<Slider value={pluck} max={0.5} max={1} step={0.001}
