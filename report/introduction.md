@@ -1,15 +1,44 @@
 WebAudio Bouzouki: Real-time Physical Modelling
 ==============
 
-Introduction
-------------
+In this article an implementation of a Karplus-Strong plucked string synthesiser is discussed. The synthesiser runs in real-time in modern web-browsers using a WebAudio implementation (written in Javascript). It is intended to be useful for use for procedural audio in web-based games, as the parameters are customisable. This particular implementation focuses on reporoducing the tone of a bouzouki as realistically as possible.
 
-Bla bla bla lorem ipsum something this is the introduction
+<figure>
+	![Ozark 2222 Bouzouki](/images/ozark_2222_bouzouki.png)
+	<figcaption>Ozark 2222 Bouzouki</figcaption>
+</figure>
 
-Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic [synth][karplus] nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+Background
+----------
+
+Karplus and Strong discovered in the early 1980s that low-pass filtering a wavetable on every pass produced realistic (ish) sounding string synthesis. This is the basis for the physical modelling approach used here. 
+
+A model of a string exists whereby a wave travels along the string. When it hits the nut or the bridge at either end, some amount of this wave is diffused (loss), and some is reflected back along the string in the other direction. This produces acoustic waves. The non-linearity of this is what produces the interesting, realistic sounds, since they are so complex it does not sound synthetic.
+
+<figure>
+	<figcaption>KS algorithm diagram here</figcaption>
+</figure>
+
+What makes a model physical is the manipulation of 'physical' properties rather than signal processing ones. I.e. we can adjust the 'length' of the string or the amount of damping it has, rather than adjusting the frequency or the waveshape directly. This is a complex system, we we expect these parameters to map in complex ways to these underlying signal processing parameters, and produce interesting outputs.
+
+d'Alembert's used to do left/right travelling waves, this is applied by Julius Smith to create a simple and efficient formalised solution for Karplus-String. 
+
+Signals scatter at a discontinuity when there is a change in impedance (Kelly-Lochbaum Scattering junction)
 
 Implementation
 --------------
+
+The implementation is built on several layers:
+
+- A one-dimensional finite differences implementation of wave equation.
+- The shape of the excitation function can be adjusted (pluck position), which represents 
+- Karplus-Strong losses introduced at the bridge (both a linear loss and a low-pass filter).	- Whilst it's not a physical parameter, the number of coefficients used for the non-recursive low-pass filter can be adjusted, which does dramatically change the tone. This could be said to be related to the 'damping' parameter, so should perhaps be linked directly to that.
+- This is implemented 8 times for the 8 strings.
+- There is an attempt to build a scattering junction into the bridge where the energy from each string can diffuse into the neigouring strings (hopefully to promote the resonant quality of the original instrument). It's arguably as to whether this naive approach was succesful.
+- These parameters are tuned to sound as close to the bouzouki as possible.
+
+
+
 
 - Block diagram?
 - Systems, physics, etc

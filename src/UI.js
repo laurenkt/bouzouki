@@ -11,9 +11,18 @@ export default class extends React.PureComponent {
 		f0: 100,
 		pluck: 0.001,
 		pickup: 0.85,
-		damping: 0.15,
-		autoplay: false,
+		damping: 0.03,
 		coefficients: 2,
+
+		chord: 0,
+		autoplay: false,
+
+		// Compressor
+		ratio: 24,
+		threshold: -46,
+		release: 0.25,
+		attack: 0.003,
+		knee: 4,
 	}
 
 	@autobind
@@ -21,14 +30,34 @@ export default class extends React.PureComponent {
 		if (e)
 			e.preventDefault();
 
+		const {chord} = this.state;
+
 		//this.playChord([98, 123.47, 146.83, 196, 246.94, 293.66, 392, 493.88]);
-		this.playChord([196, 98, 293.7, 147.8, 220, 220, 293.6, 293.7]);
+		//if (chord < 4) {
+		//	this.playChord([196, 98, 293.7, 147.8, 220, 220, 293.6, 293.7]);
+		//}
+		if (chord < 4) {
+			this.playChord([246.942, 123.471, 349.228, 174.616, 220, 220, 293.6, 293.7], false);
+		}
+		else if (chord < 8) {
+			this.playChord([293.665, 146.832, 440, 220, 220, 220, 293.6, 293.7], false);
+		}
+		else {
+			this.playChord([261.626, 130.813, 391.955, 195.998, 220, 220, 293.6, 293.7], false);
+		}
+		
+		this.setState({chord: (chord+1) % 12});
 	}
 
 	strumDirection = false
 
-	playChord(notes) {
+	playChord(notes, direction) {
 		const {f0, pluck, pickup, damping} = this.state;
+
+		if (direction === undefined) {
+			direction = this.strumDirection;
+			this.strumDirection = !direction;
+		}
 
 		for (let i = 0; i < notes.length; i++) {
 			Tone.Transport.schedule(() =>
@@ -39,12 +68,10 @@ export default class extends React.PureComponent {
 					Math.max(0, Math.min(1, pickup+ Math.random()*0.2)),
 					Math.max(0, Math.min(1, damping+ Math.random()*0.1))
 				),
-				`+${this.strumDirection ? 0.03*i : 0.03*(notes.length - i - 1)}`
+				`+${direction ? 0.03*i : 0.03*(notes.length - i - 1)}`
 			);
 		}	
 		Tone.Transport.start();
-
-		this.strumDirection = !this.strumDirection;
 	}
 
 	@autobind
@@ -74,11 +101,27 @@ export default class extends React.PureComponent {
 			if (key == 'coefficients') {
 				this.props.synth.strings.forEach(string => string.coefficients = value);
 			}
+			if (key == 'ratio') {
+				this.props.synth.compressor.ratio.value = value;
+			}
+			if (key == 'threshold') {
+				this.props.synth.compressor.threshold.value = value;
+			}
+			if (key == 'release') {
+				this.props.synth.compressor.release.value = value;
+			}
+			if (key == 'attack') {
+				this.props.synth.compressor.attack.value = value;
+			}
+			if (key == 'knee') {
+				this.props.synth.compressor.knee.value = value;
+			}
 		}
 	}
 
 	render() {
 		const {f0, pluck, pickup, damping, autoplay, coefficients} = this.state;
+		const {ratio, threshold, release, attack, knee} = this.state;
 
 		return <div className="synthesiser">
 			<div className="controls">
@@ -97,6 +140,19 @@ export default class extends React.PureComponent {
 				Coefficients {coefficients}
 				<Slider value={coefficients} min={1} max={10} step={1}
 					onChange={this.onChange('coefficients')} />
+				<div>
+					<h1>Compressor</h1>
+					Ratio {ratio}
+					<Slider value={ratio} min={1} max={24} onChange={this.onChange('ratio')} />
+					Threshold {threshold}
+					<Slider value={threshold} min={-48} max={48} onChange={this.onChange('threshold')} />
+					Release {release}
+					<Slider value={release} min={0.01} max={1.0} step={0.01} onChange={this.onChange('release')} />
+					Attack {attack}
+					<Slider value={attack} min={0.01} max={1.0} step={0.01} onChange={this.onChange('attack')} />
+					Knee {knee}
+					<Slider value={knee} min={1} max={60} onChange={this.onChange('knee')} />
+				</div>
 			</div>
 			<button onClick={this.onClickPlay}>Play</button>
 			<button onClick={this.onClickAutoplay}>{autoplay && '[Yes] '} Autoplay</button>

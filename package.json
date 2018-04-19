@@ -51,6 +51,7 @@
 		"style-loader": "^0.20.1",
 		"tidy-html-webpack-plugin": "^0.1.2",
 		"tone": "^0.12.80",
+		"url-loader": "^1.0.1",
 		"webpack": "^3.10.0",
 		"webpack-dev-server": "^2.11.1"
 	}
