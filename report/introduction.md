@@ -63,6 +63,8 @@ You should then discuss any of the enhancements or additional extras you have ad
 
 A slight variation on parameters was added. This is meant to emulate the natural playing of the instrument; every time you pluck on the real strings, there will be slightly different amounts of damping and slightly different pluck positions. These changes add to the natural sound of the synthesis.
 
+An attempt was made to introduce coupling between the strings to develop the inter-string resonances that are characteristic of the instrument [cite][realistic]. However, it is not obvious what impact this potentially naïve implementation has without proper evaluation.
+
 Losses
 ------
 
@@ -86,7 +88,5 @@ This system and report were written in Markdown and designed in Javascript using
 References
 ----------
 
-[karplus]: http://google.com   "Google"
-[strong]:  http://yahoo.com    "Yahoo"
-
-[tension]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.205.3502&rep=rep1&type=pdf "Simulation of Plucked Strings Exhibiting Tension Modulation Driving Force (T. Tolonen, C. Erkut, V. Välimäki, M. Karjalainen)"
+[tension]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.205.3502&rep=rep1&type=pdf "Simulation of Plucked Strings Exhibiting Tension Modulation Driving Force (T Tolonen, C Erkut, V Välimäki, M Karjalainen)"
+[realistic]: http://lib.tkk.fi/Diss/2002/isbn9512261901/article6.pdf "Methods for Modeling Realistic Playing in Acoustic Guitar Synthesis (M Laurson, C Erkut, V Välimäki, M Kuuskankare)"

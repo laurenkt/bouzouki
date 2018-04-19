@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', _ => {
 
 		console.log(references);
 		const bibliography = references.map((ref, idx) =>
-			`<p><strong>[${idx+1}]</strong> <a id="ref_${idx+1}" href="${ref.href}">${ref.title}</a></p>`).join();
+			`<p><strong>[${idx+1}]</strong> <a class="reference" id="ref_${idx+1}" href="${ref.href}">${ref.title}</a></p>`).join('');
 
 		el.insertAdjacentHTML('afterend', bibliography);
 	})
