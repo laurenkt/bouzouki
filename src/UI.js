@@ -115,7 +115,7 @@ export default class extends React.PureComponent {
 			this.setState({[key]: value});
 
 			if (key == 'coefficients') {
-				this.updateCompressor();
+				this.props.synth.strings.forEach(string => string.coefficients = value);
 			}
 			if (key == 'ratio') {
 				this.updateCompressor();
