@@ -52,18 +52,21 @@ A slight variation on parameters was added. This is meant to emulate the natural
 Evaluation
 ----------
 
-Further to the 'systems' approach, it would be useful to evaluate the effectiveness of the convolution approach to generate the instrument body. Would it be more effective to model the body more fully? That way things could be parameterised. In the case of this model, an IR from a Taylor acoustic guitar is being used to model the body. Sticking with the convolution approach, it was intended before to utilise an anechoic chamber to record an IR from within the body of the reference bouzouki that was used when designing the synthesiser. Unfortunately this was not managed to be organised in the constraints of time available when accounting for other projects
+Further to the 'systems' approach, it would be useful to evaluate the effectiveness of the convolution approach to generate the instrument body. Would it be more effective to model the body more fully? That way things could be parameterised. In the case of this model, an IR from a Taylor acoustic guitar is being used to model the body. The original plan was to utilise an anechoic chamber to record an IR from within the body of the reference bouzouki that was used when designing the synthesiser. Unfortunately this was not completed in time.
 
 Originally the model used a linear factor to control the amount of losses at the bridge. The model is enhanced to use a non-recursive moving average filter. More than a small handful of coefficients would increase latency but in practice that's not a problem as the tone drops off with only a very small number of coefficients.
 
-The coefficients does seem to have a huge impact on the tone of the resulting sound, and the difference between 1 or 2 coefficients, or 2 or 3, is quite fast. In order to get more granular control over the tone it might be helpful to use a recursive filter design where the cut-off frequency or gradient can be adjusted somewhat.
+The coefficients does seem to have a huge impact on the tone of the resulting sound, and the difference between 1 or 2 coefficients, or 2 or 3, is quite vast. The original KS algorithm and many subsequent algorithms only use the simplest two-sample filter [cite][ks]. In order to get more granular control over the tone it might be helpful to use a recursive filter design where the cut-off frequency or gradient can be adjusted somewhat.
 
 Tolonen etc. note that modelling tension coupling of the string to the instrument body is important for the naturalness of the synthesised tone [cite][tension]. This approach does not seem too computationally expensive to be performed in real-time, although would require the implementation of a fractional delay line (this does lend itself to the DSP-style implementation used in this synthesiser).
+
 
 Colophon
 --------
 
 This system and report were written in Markdown and designed in Javascript using WebAudio, React, with live-updating word count. Please contact the author if you have interesting WebAudio projects.
+
+The current state of WebAudio does pose some practical problems for implementation: the scriptProcessorNode API, which is the API used to do frame-by-frame DSP for this synthesiser, is currently deprecated and not recommended for use. This is because all DSP processing is done in the main thread with the browser UI, and therefore moving sliders and adjusting the layout can cause glitches in the audio output (as you will be able to observe through experimentation). The replacement AudioWorklet API, which should be far more efficient and will run in its own thread, is not currently enabled by default in major browsers. Given another year of progression of browser technology much more sophisticated real-time processing could be achieved.
 
 
 References

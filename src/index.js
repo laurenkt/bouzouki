@@ -4,7 +4,7 @@ import Tone     from 'tone';
 import Bouzouki from './Bouzouki';
 import UI from './UI';
 import TableOfContents from './TableOfContents';
-import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 
 import './style.scss';
 
@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', _ => {
 		if (el.innerText !== 'References')
 			return;
 
-		const references = uniq(Array.prototype.map.call($$('a[title]'), el =>
-			({title: el.getAttribute('title'), url: el.getAttribute('href')})));
+		const references = uniqBy(Array.prototype.map.call($$('a[title]'), el =>
+			({title: el.getAttribute('title'), url: el.getAttribute('href')})), 
+			ref => ref.title);
 
 		$$('a[title]').forEach(el => {
 			if (el.innerText === 'cite') {
