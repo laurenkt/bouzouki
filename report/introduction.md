@@ -8,6 +8,14 @@ In this article an implementation of a Karplus-Strong plucked string synthesiser
 	<figcaption>Ozark 2222 Bouzouki</figcaption>
 </figure>
 
+<figure>
+	<audio controls>
+		<source src="/audio/sample.mp3" type="audio/mpeg" />
+		Your browser does not support the audio element.
+	</audio>
+	<figcaption>Recording of Bouzouki</figcaption>
+</figure>
+
 Background
 ----------
 

@@ -68,6 +68,7 @@ module.exports = {
 		new CopyWebpackPlugin([{from: 'src/ir', to: 'ir'}]),
 		new CopyWebpackPlugin([{from: 'src/assets/**/*', to: 'assets/[name].[ext]'}]),
 		new CopyWebpackPlugin([{from: 'report/images', to: 'images'}]),
+		new CopyWebpackPlugin([{from: 'report/audio', to: 'audio'}]),
 	],
 	devtool: 'inline-source-map',
 	devServer: {
