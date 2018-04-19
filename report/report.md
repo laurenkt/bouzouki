@@ -1,11 +1,11 @@
 WebAudio Bouzouki: Real-time Physical Modelling
 ==============
 
-In this article an implementation of a Karplus-Strong plucked string synthesiser is discussed. The synthesiser runs in real-time in modern web-browsers using a WebAudio implementation (written in Javascript). It is intended to be useful for use for procedural audio in web-based games, as the parameters are customisable. This particular implementation focuses on reporoducing the tone of a bouzouki as realistically as possible.
+In this article an implementation of a Karplus-Strong plucked string synthesiser is discussed. The synthesiser runs in real-time in modern web-browsers using a WebAudio implementation (written in Javascript). It is intended to be useful for use for procedural audio in web-based games, as the parameters are customisable. This particular implementation focuses on reproducing the tone of a bouzouki as realistically as possible.
 
 <figure>
 	![Ozark 2222 Bouzouki](images/ozark_2222_bouzouki.png)
-	<figcaption>Ozark 2222 Bouzouki</figcaption>
+	<figcaption>Ozark 2222 bouzouki</figcaption>
 </figure>
 
 <figure>
@@ -13,13 +13,15 @@ In this article an implementation of a Karplus-Strong plucked string synthesiser
 		<source src="audio/sample.mp3" type="audio/mpeg" />
 		Your browser does not support the audio element.
 	</audio>
-	<figcaption>Recording of Bouzouki</figcaption>
+	<figcaption>Recording of the instrument</figcaption>
 </figure>
+
+The bouzouki is a traditional greek instrument, commonly with 6 or 8 strings arranged in courses of 2 strings per course. The particular bouzouki used as a basis, the Ozark 2222, is a 4-course instrument (8 strings). These strings are typically tuned to the same note (though not necessarily in the same octave), so the sound they produce is quite a resonant, drone-like sound (listen to the audio example in the figure above).
 
 Background
 ----------
 
-Karplus and Strong discovered in the early 1980s that low-pass filtering a wavetable on every pass produced realistic (ish) sounding string synthesis. This is the basis for the physical modelling approach used here. 
+Karplus and Strong discovered in the early 1980s that low-pass filtering a wavetable on every pass produced relatively sounding string synthesis for the time [cite][ks]. This is a simple technique but is the basis for the physical modelling approach used here. 
 
 A model of a string exists whereby a wave travels along the string. When it hits the nut or the bridge at either end, some amount of this wave is diffused (loss), and some is reflected back along the string in the other direction. This produces acoustic waves. The non-linearity of this is what produces the interesting, realistic sounds, since they are so complex it does not sound synthetic.
 
@@ -88,5 +90,6 @@ This system and report were written in Markdown and designed in Javascript using
 References
 ----------
 
-[tension]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.205.3502&rep=rep1&type=pdf "Simulation of Plucked Strings Exhibiting Tension Modulation Driving Force (T Tolonen, C Erkut, V Välimäki, M Karjalainen)"
-[realistic]: http://lib.tkk.fi/Diss/2002/isbn9512261901/article6.pdf "Methods for Modeling Realistic Playing in Acoustic Guitar Synthesis (M Laurson, C Erkut, V Välimäki, M Kuuskankare)"
+[ks]: http://www.jstor.org/stable/3680062 "Digital Synthesis of Plucked-String and Drum Timbres (K Karplus & A Strong). 1983."
+[tension]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.205.3502&rep=rep1&type=pdf "Simulation of Plucked Strings Exhibiting Tension Modulation Driving Force (T Tolonen, C Erkut, V Välimäki, M Karjalainen). 1999."
+[realistic]: http://lib.tkk.fi/Diss/2002/isbn9512261901/article6.pdf "Methods for Modeling Realistic Playing in Acoustic Guitar Synthesis (M Laurson, C Erkut, V Välimäki, M Kuuskankare). 2001."

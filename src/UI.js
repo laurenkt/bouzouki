@@ -156,7 +156,7 @@ export default class extends React.PureComponent {
 				Coefficients {coefficients}
 				<Slider value={coefficients} min={1} max={10} step={1}
 					onChange={this.onChange('coefficients')} />
-				<div>
+				<div className="extra">
 					<h1>Compressor</h1>
 					Ratio {ratio}
 					<Slider value={ratio} min={1} max={24} onChange={this.onChange('ratio')} />
