@@ -11,18 +11,24 @@ export default class extends React.PureComponent {
 		f0: 100,
 		pluck: 0.001,
 		pickup: 0.85,
-		damping: 0.03,
+		damping: 0.018,
 		coefficients: 2,
 
 		chord: 0,
 		autoplay: false,
 
 		// Compressor
-		ratio: 24,
-		threshold: -46,
+		ratio: 12,
+		threshold: -47,
 		release: 0.25,
 		attack: 0.003,
-		knee: 4,
+		knee: 25,
+	}
+
+	constructor(props) {
+		super(props);
+		
+		this.updateCompressor();
 	}
 
 	@autobind
@@ -92,6 +98,16 @@ export default class extends React.PureComponent {
 		setTimeout(this.autoplay, 1000);
 	}
 
+	updateCompressor() {
+		const {ratio, threshold, release, attack, knee} = this.state;
+	
+		this.props.synth.compressor.ratio.value = ratio;
+		this.props.synth.compressor.threshold.value = threshold;
+		this.props.synth.compressor.release.value = release;
+		this.props.synth.compressor.attack.value = attack;
+		this.props.synth.compressor.knee.value = knee;
+	}
+
 	@autobind
 	@memoize
 	onChange(key) {
@@ -99,22 +115,22 @@ export default class extends React.PureComponent {
 			this.setState({[key]: value});
 
 			if (key == 'coefficients') {
-				this.props.synth.strings.forEach(string => string.coefficients = value);
+				this.updateCompressor();
 			}
 			if (key == 'ratio') {
-				this.props.synth.compressor.ratio.value = value;
+				this.updateCompressor();
 			}
 			if (key == 'threshold') {
-				this.props.synth.compressor.threshold.value = value;
+				this.updateCompressor();
 			}
 			if (key == 'release') {
-				this.props.synth.compressor.release.value = value;
+				this.updateCompressor();
 			}
 			if (key == 'attack') {
-				this.props.synth.compressor.attack.value = value;
+				this.updateCompressor();
 			}
 			if (key == 'knee') {
-				this.props.synth.compressor.knee.value = value;
+				this.updateCompressor();
 			}
 		}
 	}
